@@ -8,6 +8,8 @@
 
 static I2C_HandleTypeDef * I2C;
 static uint8_t i2caddr = 0;
+static uint8_t data = 0;
+
 /**
  * Bit number associated to a give Pin
  */
@@ -23,8 +25,9 @@ uint8_t regForPin(uint8_t pin, uint8_t portAaddr, uint8_t portBaddr){
 }
 
 void writeRegister(uint8_t regAddr, uint8_t regValue){
-	// Write the register
-//	Wire.beginTransmission(MCP23017_ADDRESS | i2caddr);
+	uint8_t temp [] = {regAddr, regValue};
+
+	HAL_I2C_Master_Transmit((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), &temp, 2, 350);
 //	wiresend(regAddr);
 //	wiresend(regValue);
 //	Wire.endTransmission();
@@ -47,6 +50,7 @@ void updateRegisterBit(uint8_t pin, uint8_t pValue, uint8_t portAaddr, uint8_t p
 	writeRegister(regAddr,regValue);
 }
 
+
 /**
  * Reads a given register
  */
@@ -57,13 +61,15 @@ uint8_t readRegister(uint8_t addr){
 //	Wire.endTransmission();
 //	Wire.requestFrom(MCP23017_ADDRESS | i2caddr, 1);
 //	return wirerecv();
+	HAL_I2C_Master_Receive((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), &data, 2, 350);
+	return data;
 }
 
 // Functions for Arduino like
 void begin(I2C_HandleTypeDef * I2C_Handler, uint8_t addr) {
 
 	I2C = I2C_Handler;
-	i2caddr = addr;
+	i2caddr = addr<<1;
 
 	// all inputs on port A and B
 	writeRegister(MCP23017_IODIRA,0xff);
