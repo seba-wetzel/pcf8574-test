@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "pcf8574.h"
+#include "mcp23017.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +47,9 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+void print (char* string){
 
+}
 
 /* USER CODE END PV */
 
@@ -94,64 +96,33 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-
   MX_I2C1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  char string2 [10];
-  char string [10];
-  //uint8_t len = 0;
-  //uint8_t len1 = 0;
-  uint8_t cmd[] = {0x00};
-  //uint8_t cmd1[] = {0x01};
-  short i = 8;
-
+  begin(&hi2c1, 0x27 );
+  for(uint8_t i=0; i<15; i++){
+      pinMode(i, INPUT);
+      pullUp(i, HIGH);
+  }
   /* USER CODE END 2 */
-  if(i > 8) i=0;
-  cmd[0] = ~(1 << i);
-//  while (HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)(0x20<<1),  cmd, 1, 350) != HAL_OK){
-//	delay(10);
-//  }
-  delay(250);
-
-
-//  while (HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)(0x20<<1),  (uint8_t) 0x01 , 1, 350) != HAL_OK){
-//	delay(10);
-//  }
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  for(uint8_t i=0; i<15; i++){
+	    if(!digitalRead(i)){
+//	      print("boton numero: ");
+//	      print(i-3);
+	      while(!digitalRead(i)){
+	      delay(100);
+	      }
+	    }
+	  }
     /* USER CODE BEGIN 3 */
+}
 
-//	  switch (recibe) {
-//		case HAL_ERROR: HAL_UART_Transmit(&huart2, "ERROR\r\n", 10, 250);
-//			break;
-//		case HAL_BUSY: HAL_UART_Transmit(&huart2, "BUSY\r\n", 6, 250);
-//			break;
-//		case HAL_OK: HAL_UART_Transmit(&huart2, "OK\r\n", 4, 250);
-//			break;
-//		default: HAL_UART_Transmit(&huart2, "DEFAULT\r\n", 10, 250);
-//			break;
-//	}
-
-	  //len1 = sprintf(string2," %02X \r\n", data);
-	  //len = sprintf(string," %i \r\n", cmd[0]);
-      if (digitalRead(6) > 0){
-    	  HAL_UART_Transmit(&huart2, "hola", 4, 150);
-      }
-
-//	  HAL_UART_Transmit(&huart2, string2, len1, 150);
-
-	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-
-
-      //i++;
-	  //HAL_Delay(1000);
-  }
   /* USER CODE END 3 */
 }
 

@@ -39,11 +39,24 @@
 
 #define MCP23017_INT_ERR 255
 
+
+#define lowByte(w) ((uint8_t) ((w) & 0xff))
+#define highByte(w) ((uint8_t) ((w) >> 8))
+
+#define bitRead(value, bit) (((value) >> (bit)) & 0x01)
+#define bitSet(value, bit) ((value) |= (1UL << (bit)))
+#define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
+#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
+
 typedef enum{
 	INPUT,
 	OUTPUT
 } pinModeIO;
 
+typedef enum{
+	LOW,
+	HIGH
+} pinModeState;
 
 //Functions prototypes for communication
 uint8_t bitForPin(uint8_t);
