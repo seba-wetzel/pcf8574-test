@@ -66,7 +66,7 @@ void updateRegisterBit(uint8_t, uint8_t, uint8_t, uint8_t);
 uint8_t readRegister(uint8_t);
 
 //Functions prototypes for hardware abstraction
-void begin(I2C_HandleTypeDef * ,uint16_t);
+void begin(I2C_HandleTypeDef * ,uint8_t);
 void pinMode(uint8_t, uint8_t);
 void pullUp(uint8_t, uint8_t);
 uint8_t digitalRead(uint8_t);
