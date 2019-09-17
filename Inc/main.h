@@ -51,7 +51,7 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+void Error_Handler(uint8_t);
 
 /* USER CODE BEGIN EFP */
 

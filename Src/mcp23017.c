@@ -6,9 +6,9 @@
  */
 #include "mcp23017.h"
 
-static I2C_HandleTypeDef * I2C;
-static uint8_t i2caddr = 0;
-static uint8_t data = 0;
+I2C_HandleTypeDef * I2C;
+uint16_t i2caddr = 0;
+uint8_t data = 0;
 
 /**
  * Bit number associated to a give Pin
@@ -61,15 +61,16 @@ uint8_t readRegister(uint8_t addr){
 //	Wire.endTransmission();
 //	Wire.requestFrom(MCP23017_ADDRESS | i2caddr, 1);
 //	return wirerecv();
-	HAL_I2C_Master_Receive((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), &data, 2, 350);
+	HAL_I2C_Master_Receive((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), &data, 1, 350);
+	//HAL_I2C_Mem_Read(I2C, i2caddr, MemAddress, MemAddSize, pData, Size, Timeout)
 	return data;
 }
 
 // Functions for Arduino like
-void begin(I2C_HandleTypeDef * I2C_Handler, uint8_t addr) {
+void begin(I2C_HandleTypeDef * I2C_Handler, uint16_t addr) {
 
 	I2C = I2C_Handler;
-	i2caddr = addr<<1;
+	i2caddr = (uint16_t)(addr<<1);
 
 	// all inputs on port A and B
 	writeRegister(MCP23017_IODIRA,0xff);

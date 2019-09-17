@@ -99,7 +99,7 @@ int main(void)
   MX_I2C1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  begin(&hi2c1, 0x27 );
+  begin(&hi2c1, 0x20 );
   for(uint8_t i=0; i<15; i++){
       pinMode(i, INPUT);
       pullUp(i, HIGH);
@@ -108,17 +108,21 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  char buffer [20];
   while (1)
   {
     /* USER CODE END WHILE */
-	  for(uint8_t i=0; i<15; i++){
-	    if(!digitalRead(i)){
-//	      print("boton numero: ");
-//	      print(i-3);
-	      while(!digitalRead(i)){
-	      delay(100);
-	      }
-	    }
+//	  for(uint8_t i=0; i<15; i++){
+//	    if(!digitalRead(i)){
+//	    	sprintf(buffer, "boton %d pressed\r\n", i);
+//	    	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 100);
+//	    	delay(200);
+//	    }
+	    if(!digitalRead(8)){
+	    	sprintf(buffer, "boton %d pressed\r\n", 8);
+	    	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 100);
+	    	delay(1500);
+
 	  }
     /* USER CODE BEGIN 3 */
 }
@@ -146,7 +150,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(3);
   }
   /** Initializes the CPU, AHB and APB busses clocks 
   */
@@ -159,7 +163,7 @@ void SystemClock_Config(void)
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(3);
   }
 }
 
@@ -189,7 +193,7 @@ static void MX_I2C1_Init(void)
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(2);
   }
   /* USER CODE BEGIN I2C1_Init 2 */
 
@@ -222,7 +226,7 @@ static void MX_USART2_UART_Init(void)
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
   if (HAL_UART_Init(&huart2) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(2);
   }
   /* USER CODE BEGIN USART2_Init 2 */
 
@@ -276,13 +280,28 @@ static void MX_GPIO_Init(void)
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
+void Error_Handler(uint8_t code)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-	HAL_UART_Transmit(&huart2, "ERROR\r\n", 10, 150);
+	switch (code) {
+		case 4:
+			HAL_UART_Transmit(&huart2, "ERROR A\r\n", 10, 150);
+			break;
+		case 2:
+			HAL_UART_Transmit(&huart2, "ERROR 2\r\n", 10, 150);
+			break;
+		case 3:
+			HAL_UART_Transmit(&huart2, "ERROR 3\r\n", 10, 150);
+			break;
+		default:
+			HAL_UART_Transmit(&huart2, "ERROR 0\r\n", 10, 150);
+			break;
+	}
+
 	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	HAL_Delay(1000);
+	for(;;);
   /* USER CODE END Error_Handler_Debug */
 }
 
