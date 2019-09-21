@@ -25,12 +25,8 @@ uint8_t regForPin(uint8_t pin, uint8_t portAaddr, uint8_t portBaddr){
 }
 
 void writeRegister(uint8_t regAddr, uint8_t regValue){
-	uint8_t temp [] = {regAddr, regValue};
-
-	HAL_I2C_Master_Transmit((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), &temp, 2, 350);
-//	wiresend(regAddr);
-//	wiresend(regValue);
-//	Wire.endTransmission();
+	uint8_t data[1] = { regValue };
+	HAL_I2C_Mem_Write((I2C_HandleTypeDef*) I2C, (uint16_t) (i2caddr), regAddr, 1, data, 1, 350);
 }
 
 /**
@@ -61,7 +57,7 @@ uint8_t readRegister(uint8_t addr){
 //	Wire.endTransmission();
 //	Wire.requestFrom(MCP23017_ADDRESS | i2caddr, 1);
 //	return wirerecv();
-	HAL_I2C_Master_Receive((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), &data, 2, 350);
+	HAL_I2C_Mem_Read((I2C_HandleTypeDef*) I2C, (uint16_t)(i2caddr), addr, 1, &data, 1, 350);
 	return data;
 }
 

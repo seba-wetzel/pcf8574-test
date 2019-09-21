@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mcp23017.h"
+#include "mcp23017-lib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,9 +48,11 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-void print (char* string){
 
-}
+
+MCP23017_HandleTypeDef hmcp;
+
+
 
 /* USER CODE END PV */
 
@@ -99,29 +102,49 @@ int main(void)
   MX_I2C1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  begin(&hi2c1, 0x27 );
+  begin(&hi2c1, 0x20 );
   for(uint8_t i=0; i<15; i++){
       pinMode(i, INPUT);
       pullUp(i, HIGH);
   }
+
+//  mcp23017_init(&hmcp, &hi2c1, 0x20);
+//  mcp23017_iodir(&hmcp, MCP23017_PORTA, MCP23017_IODIR_ALL_INPUT);
+//  mcp23017_iodir(&hmcp, MCP23017_PORTB, MCP23017_IODIR_ALL_INPUT);
+//  mcp23017_ggpu(&hmcp, MCP23017_PORTA, MCP23017_GPPU_ALL_ENABLED);
+//  mcp23017_ggpu(&hmcp, MCP23017_PORTB, MCP23017_GPPU_ALL_ENABLED);
+  char buffer [20];
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+		/* USER CODE END WHILE */
+//	  mcp23017_read_gpio(&hmcp, MCP23017_PORTA);
+//	  mcp23017_read_gpio(&hmcp, MCP23017_PORTB);
+//	  if(hmcp.gpio[MCP23017_PORTB]<0xFF){
+//		  sprintf(&buffer, "Pin:  %d \r\n", hmcp.gpio[MCP23017_PORTB]);
+//		  HAL_UART_Transmit(&huart2, &buffer, sizeof(buffer), 100);
+//		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+//		  delay(100);
+//	  }
+//	  delay(100);
 	  for(uint8_t i=0; i<15; i++){
-	    if(!digitalRead(i)){
-//	      print("boton numero: ");
-//	      print(i-3);
-	      while(!digitalRead(i)){
-	      delay(100);
+	      if(!digitalRead(i)){
+	    	sprintf(&buffer, "Pin:  %d \r\n", i);
+	    	HAL_UART_Transmit(&huart2, &buffer, sizeof(buffer), 100);
+
+	    	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	        while(!digitalRead(i)){
+	        delay(100);
+	        }
 	      }
+	      delay(100);
 	    }
-	  }
-    /* USER CODE BEGIN 3 */
-}
+
+		/* USER CODE BEGIN 3 */
+	}
 
   /* USER CODE END 3 */
 }
