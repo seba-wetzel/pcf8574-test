@@ -132,11 +132,13 @@ int main(void)
 //	  delay(100);
 	  for(uint8_t i=0; i<15; i++){
 	      if(!digitalRead(i)){
+	    	memset(&buffer,0,sizeof(buffer));
 	    	sprintf(&buffer, "Pin:  %d \r\n", i);
 	    	HAL_UART_Transmit(&huart2, &buffer, sizeof(buffer), 100);
 
 	    	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	        while(!digitalRead(i)){
+	        	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	        delay(100);
 	        }
 	      }
